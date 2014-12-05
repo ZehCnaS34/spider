@@ -1,13 +1,13 @@
 require "spider/version"
+require 'spider/util'
 require 'net/http'
+require 'redis'
+require 'json'
+
 
 module Spider
   attr_reader :links
   # Your code goes here...
-
-  def nil_or_contains_url(e)
-    e if  e =~ /http:\/\/.+(.com|.net|.org|edu)/
-  end
 
 
   def get_response(uri)
@@ -19,11 +19,14 @@ module Spider
 
   end
 
+
   def initialize
+    @db = Redis.new(port: 6379)
     @links = Array.new
   end
 
   def crawl(depth=10)
+    @links = JSON.parse(@db.get('links'))
     at = 0
     @links.each do |l|
       if at == depth
@@ -34,70 +37,24 @@ module Spider
     end
     puts @links
     puts @links.length
+    @db.set "links", @links.to_json
   end
 
-  def seed(uri)
 
-    @links.concat get_response(uri).body.split("<").map{|i|
-      i if i =~ /(.com|.net)/
-    }.compact.join.split(/href=['"]/).map{ |i|
-      i.split(/['"]/)[0]
-    }.compact.map{|i|
-      nil_or_contains_url i
-    }.compact.uniq
-
-    # @links = get_response(uri)).body.split("<").map{ |i|
-  #   i if i =~ /(.com|.net)/
-  # }.compact.join.split(/href=['"]/).map{ |i|
-  #   i.split(/['"]/)[0] }.map{ |i|
-  #   nil_or_contains_url i
-  # }.compact.uniq
+  def fetch_page(uri)
+    @body = get_response(uri)
+  end
 
 
-    # response.body.split(/['"]/).map{ |i|
-    #   nil_or_contains_url i
-    # }.compact.uniq.each do |f|
-    #   @links << f
-    # end
+  def scrape
+    return nil if @body.nil
 
-
-    # ## start parsing the reponse body
-    # response.body.split("<").each do |e|
-    #   ## if href is matched
-    #   if e =~ /href=/
-    #     meta_link = /href=['"].+['"]/.match(e).to_s
-    #     # remove the href from the meta_link
-    #     meta_link = meta_link[6..meta_link.length]
-
-    #     # define where the href locations stops
-    #     stopper = meta_link.to_s.index(/['"]/)
-    #     if meta_link.to_s.length > 1
-    #       # almost in final form
-    #       meta_link = meta_link.to_s[0..stopper-1]
-
-    #       ## if link starts with http
-    #       if meta_link =~ /http:\/\//
-
-    #         meta_link = meta_link[7..meta_link.length]
-    #         loc_index = meta_link.index("/")
-    #         # puts meta_link
-    #         # puts loc_index
-
-    #         if loc_index
-    #           @links << meta_link[0..loc_index-1] if @links.index(meta_link[0..loc_index-1]).nil?
-    #         else
-    #           @links << meta_link if @links.index(meta_link).nil?
-    #         end
-
-    #       end
-
-
-    #     end
-    #   end
-    # end
-
-    # @links = @links.map { |l| l if l =~ /http:\/\// }.compact.uni
-
+    @links.concat get_response(uri).body.split("<")
+      .map(&has_dot_com).join.split(/href=['"]/)
+      .map(&has_href)
+      .map(&nil_or_contains_url)
+      .map(&has_id)
+      .compact.uniq
     puts @links.count
     self
   end

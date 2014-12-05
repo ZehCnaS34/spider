@@ -12,8 +12,7 @@ end
 class Crawl < Thor
   desc 'to LOCATION', 'start the webcrawl at LOCATION'
   def to(location)
-    puts 'Im going to start here'
-    S.new.look
+    S.new.seed location
   end
 end
 

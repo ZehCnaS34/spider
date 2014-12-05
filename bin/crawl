@@ -1,0 +1,20 @@
+#!/usr/bin/env ruby
+
+require 'spider'
+require "thor"
+
+
+class S
+  include Spider
+end
+
+
+class Crawl < Thor
+  desc 'to LOCATION', 'start the webcrawl at LOCATION'
+  def to(location)
+    puts 'Im going to start here'
+    S.new.look
+  end
+end
+
+Crawl.start(ARGV)

@@ -1,11 +1,13 @@
 #!/usr/bin/env ruby
 
 require 'spider'
+require 'spider/util'
 require "thor"
 
 
 class S
   include Spider
+  include Spider::Util
 end
 
 
@@ -13,7 +15,6 @@ class Crawl < Thor
   desc 'seed LOCATION', 'start the webcrawl at LOCATION'
   def seed(location)
     puts S.new.seed(location).crawl(10)
-
   end
 
   desc 'go', 'crawl on the links that are already obtained'

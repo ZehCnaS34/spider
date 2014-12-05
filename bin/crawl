@@ -12,7 +12,8 @@ end
 class Crawl < Thor
   desc 'to LOCATION', 'start the webcrawl at LOCATION'
   def to(location)
-    S.new.seed(location).crawl(100)
+    puts S.new.seed(location).crawl(100)
+
   end
 end
 

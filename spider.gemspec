@@ -9,8 +9,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ["alexander sanchez"]
   spec.email         = ["asanchez.dev@gmail.com"]
   spec.summary       = %q{web crawler}
-  spec.description   = %q{web crawler}
-  spec.homepage      = ""
+  spec.description   = %q{web crawler made in ruby}
+  spec.homepage      = "http://spider.github.io"
   spec.license       = "MIT"
   spec.bindir        = "bin"
   spec.files         = `git ls-files -z`.split("\x0")

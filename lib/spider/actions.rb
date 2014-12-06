@@ -1,5 +1,8 @@
+require 'spider/util'
+
 module Spider
   module Actions
+    include ::Spider::Util
     def crawl(depth=10)
       @links.each do |l|
         break if depth == 0
@@ -8,17 +11,21 @@ module Spider
       end
     end
     def scrape
-      if @body.nil?
-        puts "body is nil"
-        return nil
-      end
-      @links.concat @body.split(/href=['"]/)
-      puts @links
-      # return self for method chaining
+      return nil if @body.nil?
+      # @links.concat
+
+      puts @body
+        .split('=')
+        .map(&method(:when_valid_url)).compact
+        .map(&method(:has_dot_com)).compact
+        .map(&method(:when_valid_url)).compact
+        .uniq
+
       self
     end
     def seed(location)
-      @body = fetch_page(location)
+      @body = fetch_page(location).body
+      self
     end
   end
 end

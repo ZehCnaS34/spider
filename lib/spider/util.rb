@@ -9,8 +9,12 @@ module Spider
       e if  e =~ /http:\/\/.+(.com|.net|.org|edu)/
     end
 
+    def when_valid_url(e)
+      e[0..e.length] if e =~ /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
+    end
+
     def has_dot_com(i)
-      i.split(/['"]/)[0]
+      i.split(/['"]/)[1]
     end
 
     def has_href(i)

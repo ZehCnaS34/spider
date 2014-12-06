@@ -7,12 +7,14 @@ require "thor"
 class Crawl < Thor
   desc 'seed LOCATION', 'start the webcrawl at LOCATION'
   def seed(location)
-    puts Spider::Core.new.seed(location)
+    s = Spider::Core.new
+    s.seed(location).scrape
   end
 
   desc 'go', 'crawl on the links that are already obtained'
   def go
-    puts Spider::Core.new.crawl
+    s = Spider::Core.new
+    s.scrape
   end
 end
 

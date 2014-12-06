@@ -43,10 +43,12 @@ module Spider
       @body = get_response(uri)
     end
 
-    def make_safe(links)
-      links.map do |l|
-        l.encode("iso-8859-1").force_encoding("utf-8")
-      end
+    def make_db_safe(l)
+      l.encode("iso-8859-1").force_encoding("utf-8")
+    end
+
+    def corrent_encoding(e)
+      Base64.decode64(e)
     end
 
   end

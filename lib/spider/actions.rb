@@ -1,12 +1,14 @@
 require 'spider/util'
+require 'spider/model'
 require 'term/ansicolor'
 require 'redis'
 require 'json'
 
 module Spider
   module Actions
-    include ::Spider::Util
+    include Util
     include Term::ANSIColor
+    include Models
 
     def crawl(depth=10)
 
@@ -19,12 +21,19 @@ module Spider
 
         ## print link is broken in the ling
         begin
-          print bold, cyan, "---------Begin scraping for #{l}---------", reset, "\n"
+          print bold,
+            cyan,
+            "---------Begin scraping for #{l}---------",
+            reset,
+            "\n"
+
+
           seed(l)
           scrape
-        rescue
+        rescue Exception => e
           # Welcome
           print red, bold, "broken link", reset, "\n"
+          print red, bold, e, reset, "\n"
           @links.delete_at i
         end
         depth -= 1
@@ -32,7 +41,18 @@ module Spider
 
       # cleaning the invalid links
       @links.compact
-      @db.set 'links', make_safe(@links).to_json
+      begin
+
+        # try to save to the database
+        @links.map { |l|
+          Link.create(location:l)
+        }
+
+
+      rescue Exception => e
+        print red, bold, "Error saving to database", reset, "\n"
+        print red, bold, e, reset, "\n"
+      end
     end
 
     def scrape
@@ -43,14 +63,15 @@ module Spider
       ## the HTML pages for links
       @body
         .split('href')
-        .map(&method(:when_valid_url)).compact
+        .map(&method(:when_valid_url )).compact
         .map(&method(:append_to_links)).compact
         .map(&method(:clean_link_hash)).compact
+        .map(&method(:corrent_encoding)).compact
+        .map(&method(:make_db_safe)).compact
         .uniq
 
       # puts @links
       print bold, blue, "#{@links.count} links", reset, "\n"
-
       self
     end
 

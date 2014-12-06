@@ -1,31 +1,18 @@
 require 'net/http'
 require 'json'
 
+
 module Spider
   module Util
-    def nil_or_contains_url(e)
-      puts "fuck"
-      puts e
-      e if  e =~ /http:\/\/.+(.com|.net|.org|edu)/
-    end
-
     def when_valid_url(e)
-      e[0..e.length] if e =~ /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
+      res = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/.match(e)
+
+      return res.to_s.split('"')[0] if res
+      return nil
     end
 
-    def has_dot_com(i)
-      i.split(/['"]/)[1]
-    end
-
-    def has_href(i)
-      i if i =~ /href=/
-    end
-
-    def has_quote(i)
-      i.split(/['"]/)[0]
-    end
-
-    def has_id(i)
+    def append_to_links(l)
+      @links << l if not @links.include? l
     end
 
     def get_response(uri)
@@ -40,7 +27,5 @@ module Spider
     def fetch_page(uri)
       @body = get_response(uri)
     end
-
-
   end
 end

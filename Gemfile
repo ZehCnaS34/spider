@@ -4,3 +4,4 @@ source 'https://rubygems.org'
 gemspec
 
 gem 'redis'
+gem 'term-ansicolor', '~> 1.3.0'

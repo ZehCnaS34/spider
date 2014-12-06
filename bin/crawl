@@ -8,7 +8,7 @@ class Crawl < Thor
   desc 'seed LOCATION', 'start the webcrawl at LOCATION'
   def seed(location)
     s = Spider::Core.new
-    s.seed(location).scrape
+    s.seed(location).scrape.crawl(20)
   end
 
   desc 'go', 'crawl on the links that are already obtained'

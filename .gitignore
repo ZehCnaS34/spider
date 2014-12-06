@@ -13,3 +13,4 @@
 *.a
 mkmf.log
 /spider-0.0.1.gem
+/dump.rdb

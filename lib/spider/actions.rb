@@ -16,9 +16,9 @@ module Spider
         puts "There are not links alread present in the application, please seed the application"
       end
 
+      ## looping throught existing links
       @links.each_with_index do |l, i|
         break if depth == 0
-
         ## print link is broken in the ling
         begin
           print bold,
@@ -26,8 +26,6 @@ module Spider
             "---------Begin scraping for #{l}---------",
             reset,
             "\n"
-
-
           seed(l)
           scrape
         rescue Exception => e
@@ -43,16 +41,18 @@ module Spider
       @links.compact
       begin
 
-        # try to save to the database
-        @links.map { |l|
-          Link.create(location:l)
-        }
+        # # try to save to the database
+        # @links.map { |l|
+        #   Link.create(location:l)
+        # }
 
 
       rescue Exception => e
         print red, bold, "Error saving to database", reset, "\n"
         print red, bold, e, reset, "\n"
       end
+
+      self
     end
 
     def scrape

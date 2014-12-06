@@ -3,18 +3,17 @@
 require 'spider'
 require "thor"
 
-
 class Crawl < Thor
-  desc 'seed LOCATION', 'start the webcrawl at LOCATION'
-  def seed(location)
+  desc 'seed LOCATION DEPTH', 'start the webcrawl at LOCATION'
+  def seed(location,depth=20)
     s = Spider::Core.new
-    s.seed(location).scrape.crawl(20)
+    s.seed(location).scrape.crawl(depth)
   end
 
   desc 'go', 'crawl on the links that are already obtained'
   def go
     s = Spider::Core.new
-    s.scrape
+    s.with_cached.scrape.crawl(20)
   end
 end
 

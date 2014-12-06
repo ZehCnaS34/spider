@@ -4,6 +4,12 @@ require 'json'
 
 module Spider
   module Util
+
+    def log(content, &block)
+      content = block.call if block_given?
+      print bold, cyan, "---------Debug #{l}---------", reset, "\n"
+    end
+
     def when_valid_url(e)
       res = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/.match(e)
 
@@ -13,7 +19,16 @@ module Spider
 
     # append to obj var @links if not already included
     def append_to_links(l)
+      print bold, green, "Adding: #{l}", reset, "\n"
       @links << l if not @links.include? l
+    end
+
+    def clean_link_hash(l)
+      # res = /#/.match l
+      # return res.to_s.split('#')[0] if res
+      # nil
+
+      l.split '#' if l =~ /#/
     end
 
     def get_response(uri)

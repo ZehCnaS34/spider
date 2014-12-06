@@ -12,7 +12,7 @@ module Spider
         puts "There are not links alread present in the application, please seed the application"
       end
 
-      @links.each do |l|
+      @links.each_with_index do |l, i|
         break if depth == 0
         puts "trying to fetch #{l}"
 
@@ -20,26 +20,35 @@ module Spider
         ## just in case the scraped pages links are not properly formed
         ## print link is broken in the ling
         begin
+          print bold, cyan, "---------Begin scraping for #{l}---------", reset, "\n"
           seed(l)
           scrape
         rescue
           # Welcome
           print red, bold, "broken link", reset, "\n"
+          @links.delete_at i
         end
         depth -= 1
       end
+
+      # cleaning the invalid links
+      @links.compact
     end
 
     def scrape
-      return nil if @body.nil?
+      # don't run if @body is empty
+      return nil if @body.nil? or @body.empty?
+
+      ## running a series of functions to filter
+      ## the HTML pages for links
       @body
         .split('href')
         .map(&method(:when_valid_url)).compact
         .map(&method(:append_to_links)).compact
+        .map(&method(:clean_link_hash)).compact
         .uniq
 
-
-      puts @links
+      # puts @links
       print bold, blue, "#{@links.count} links", reset, "\n"
 
       self

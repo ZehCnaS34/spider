@@ -1,5 +1,7 @@
 require 'spider/util'
 require 'term/ansicolor'
+require 'redis'
+require 'json'
 
 module Spider
   module Actions
@@ -14,10 +16,7 @@ module Spider
 
       @links.each_with_index do |l, i|
         break if depth == 0
-        puts "trying to fetch #{l}"
 
-
-        ## just in case the scraped pages links are not properly formed
         ## print link is broken in the ling
         begin
           print bold, cyan, "---------Begin scraping for #{l}---------", reset, "\n"
@@ -33,6 +32,7 @@ module Spider
 
       # cleaning the invalid links
       @links.compact
+      @db.set 'links', make_safe(@links).to_json
     end
 
     def scrape

@@ -1,7 +1,6 @@
 require 'net/http'
 require 'json'
 
-
 module Spider
   module Util
 
@@ -43,5 +42,12 @@ module Spider
     def fetch_page(uri)
       @body = get_response(uri)
     end
+
+    def make_safe(links)
+      links.map do |l|
+        l.encode("iso-8859-1").force_encoding("utf-8")
+      end
+    end
+
   end
 end

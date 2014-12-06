@@ -9,6 +9,7 @@ module Spider
     include ::Spider::Actions
     def initialize
       @links = Array.new
+      @db    = Redis.new(port: 6379)
     end
   end
 end

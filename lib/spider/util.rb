@@ -11,8 +11,6 @@ module Spider
 
     def is_external_link(e)
       res = /http::\/\//.match e
-
-
       return res.string if res
       nil
     end
@@ -20,16 +18,8 @@ module Spider
     # append to obj var @links if not already included
     ## l is a nokogiri css object
     def append_to_links(l)
-      print bold, green, "Adding: #{l['href']}", reset, "\n"
-      @links << l['href'] if not @links.include? l['href']
-    end
-
-    def clean_link_hash(l)
-      # res = /#/.match l
-      # return res.to_s.split('#')[0] if res
-      # nil
-
-      l.split '#' if l =~ /#/
+      print bold, green, "Adding: #{l}", reset, "\n"
+      @links << l if not @links.include? l
     end
 
     def get_response(uri)

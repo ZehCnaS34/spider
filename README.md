@@ -1,6 +1,6 @@
 # Spider
 
-TODO: Write a gem description
+Spider is a basic web scraper.
 
 ## Installation
 

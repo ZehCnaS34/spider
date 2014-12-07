@@ -22,12 +22,12 @@ module Spider
         break if depth == 0
         ## print link is broken in the ling
         begin
-          log "Scrapping #{l}"
+          log "Scrapping #{l}", :blue
           seed(l)
           scrape
         rescue Exception => e
           # Welcome
-          print red, bold, "broken link", reset, "\n"
+          log "broken link",
           print red, bold, e, reset, "\n"
           @links.delete_at i
         end
@@ -57,22 +57,9 @@ module Spider
       # don't run if @body is empty
       # return nil if @body.nil? or @body.empty? #
 
-      ## running a series of functions to filter
-      ## the HTML pages for links
-      # @body
-      #   .split('href')
-      #   .map(&method(:when_valid_url   )).compact
-      #   .map(&method(:append_to_links  )).compact
-      #   .map(&method(:clean_link_hash  )).compact
-      #   .map(&method(:corrent_encoding )).compact
-      #   .map(&method(:make_db_safe     )).compact
-      #   .uniq
-
-
       @body.css('a')
         .map(&method(:when_valid_url)).compact
         .map(&method(:append_to_links))
-
 
       # puts @links
       print bold, blue, "#{@links.count} links", reset, "\n"

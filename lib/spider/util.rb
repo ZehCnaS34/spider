@@ -4,10 +4,23 @@ require 'json'
 module Spider
   module Util
 
-    def log(content="", &block)
+    def log(content="", color, &block)
       content = block.call if block_given?
-      print bold, cyan, "-----Debug:[#{content}]-----", reset, "\n"
+      print bold, Term::ANSIColor.send(color) , "Log[#{content}]", reset, "\n"
     end
+
+    def log_error(content)
+      log "Error:#{content}", :red
+    end
+
+    def log_info(content)
+      log "Info:#{content}", :cyan
+    end
+
+    def log_success(content)
+      log "Success:#{content}", :green
+    end
+
 
     def is_external_link(e)
       res = /http::\/\//.match e
@@ -21,26 +34,5 @@ module Spider
       print bold, green, "Adding: #{l}", reset, "\n"
       @links << l if not @links.include? l
     end
-
-    def get_response(uri)
-      if uri =~ /http:\/\//
-        Net::HTTP.get_response(URI.parse(uri))
-      else
-        Net::HTTP.get_response(URI.parse("http://#{uri}"))
-      end
-    end
-
-    def fetch_page(uri)
-      @body = get_response(uri)
-    end
-
-    def make_db_safe(l)
-      l.encode("iso-8859-1").force_encoding("utf-8")
-    end
-
-    def corrent_encoding(e)
-      Base64.decode64(e)
-    end
-
   end
 end

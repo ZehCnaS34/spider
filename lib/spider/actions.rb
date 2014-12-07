@@ -1,7 +1,6 @@
 require 'spider/util'
 require 'spider/model'
 require 'term/ansicolor'
-require 'redis'
 require 'json'
 
 module Spider

@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 require 'spider'
-require "thor"
+require 'thor'
 
 class Crawl < Thor
   desc 'seed LOCATION DEPTH', 'start the webcrawl at LOCATION'
@@ -15,7 +15,11 @@ class Crawl < Thor
     s = Spider::Core.new
     s.with_cached.scrape.crawl(depth.to_i)
   end
-end
 
+  desc "view", "view existing links"
+  def view
+    Spider::Core.new.all
+  end
+end
 
 Crawl.start(ARGV)

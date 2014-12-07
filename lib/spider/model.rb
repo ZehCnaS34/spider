@@ -5,7 +5,7 @@ module Spider
     class Link
       include Mongoid::Document
       field :location
-      store_in collection: 'links', database: 'production', session: 'default'
+      store_in collection: 'links', database: 'spider', session: 'default'
     end
   end
 end

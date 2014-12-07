@@ -39,6 +39,7 @@ module Spider
 
         # try to save to the database
         @links.map { |l|
+          log "Adding #{l} to database"
           Link.create(location:l)
         }
 
@@ -74,6 +75,12 @@ module Spider
     def seed(location)
       @body = fetch_page(location).body
       self
+    end
+
+
+    ## return an enumerator of all saved links
+    def all
+      Link.each
     end
   end
 end

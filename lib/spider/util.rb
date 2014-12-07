@@ -9,17 +9,19 @@ module Spider
       print bold, cyan, "-----Debug:[#{content}]-----", reset, "\n"
     end
 
-    def when_valid_url(e)
-      res = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/.match(e)
+    def is_external_link(e)
+      res = /http::\/\//.match e
 
-      return res.to_s.split('"')[0] if res
+
+      return res.string if res
       nil
     end
 
     # append to obj var @links if not already included
+    ## l is a nokogiri css object
     def append_to_links(l)
-      print bold, green, "Adding: #{l}", reset, "\n"
-      @links << l if not @links.include? l
+      print bold, green, "Adding: #{l['href']}", reset, "\n"
+      @links << l['href'] if not @links.include? l['href']
     end
 
     def clean_link_hash(l)

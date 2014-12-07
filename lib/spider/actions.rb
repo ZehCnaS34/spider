@@ -2,6 +2,8 @@ require 'spider/util'
 require 'spider/model'
 require 'term/ansicolor'
 require 'json'
+require 'nokogiri'
+require 'restclient'
 
 module Spider
   module Actions
@@ -53,18 +55,24 @@ module Spider
 
     def scrape
       # don't run if @body is empty
-      return nil if @body.nil? or @body.empty?
+      # return nil if @body.nil? or @body.empty? #
 
       ## running a series of functions to filter
       ## the HTML pages for links
-      @body
-        .split('href')
-        .map(&method(:when_valid_url   )).compact
-        .map(&method(:append_to_links  )).compact
-        .map(&method(:clean_link_hash  )).compact
-        .map(&method(:corrent_encoding )).compact
-        .map(&method(:make_db_safe     )).compact
-        .uniq
+      # @body
+      #   .split('href')
+      #   .map(&method(:when_valid_url   )).compact
+      #   .map(&method(:append_to_links  )).compact
+      #   .map(&method(:clean_link_hash  )).compact
+      #   .map(&method(:corrent_encoding )).compact
+      #   .map(&method(:make_db_safe     )).compact
+      #   .uniq
+
+
+      @body.css('a')
+        .map(&method(:when_valid_url)).compact
+        .map(&method(:append_to_links))
+
 
       # puts @links
       print bold, blue, "#{@links.count} links", reset, "\n"
@@ -72,7 +80,7 @@ module Spider
     end
 
     def seed(location)
-      @body = fetch_page(location).body
+      @body = Nokogiri::HTML(RestClient.get(location))
       self
     end
 

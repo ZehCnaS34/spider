@@ -4,9 +4,9 @@ require 'json'
 module Spider
   module Util
 
-    def log(content, &block)
+    def log(content="", &block)
       content = block.call if block_given?
-      print bold, cyan, "---------Debug #{l}---------", reset, "\n"
+      print bold, cyan, "-----Debug:[#{content}]-----", reset, "\n"
     end
 
     def when_valid_url(e)
@@ -36,7 +36,6 @@ module Spider
       else
         Net::HTTP.get_response(URI.parse("http://#{uri}"))
       end
-
     end
 
     def fetch_page(uri)

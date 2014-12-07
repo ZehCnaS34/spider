@@ -10,8 +10,8 @@ module Spider
     include Term::ANSIColor
     include Models
 
+    # welcome
     def crawl(depth=10)
-
       if @links.empty?
         puts "There are not links alread present in the application, please seed the application"
       end
@@ -21,11 +21,7 @@ module Spider
         break if depth == 0
         ## print link is broken in the ling
         begin
-          print bold,
-            cyan,
-            "---------Begin scraping for #{l}---------",
-            reset,
-            "\n"
+          log "Scrapping #{l}"
           seed(l)
           scrape
         rescue Exception => e
@@ -41,10 +37,10 @@ module Spider
       @links.compact
       begin
 
-        # # try to save to the database
-        # @links.map { |l|
-        #   Link.create(location:l)
-        # }
+        # try to save to the database
+        @links.map { |l|
+          Link.create(location:l)
+        }
 
 
       rescue Exception => e
@@ -63,11 +59,11 @@ module Spider
       ## the HTML pages for links
       @body
         .split('href')
-        .map(&method(:when_valid_url )).compact
-        .map(&method(:append_to_links)).compact
-        .map(&method(:clean_link_hash)).compact
-        .map(&method(:corrent_encoding)).compact
-        .map(&method(:make_db_safe)).compact
+        .map(&method(:when_valid_url   )).compact
+        .map(&method(:append_to_links  )).compact
+        .map(&method(:clean_link_hash  )).compact
+        .map(&method(:corrent_encoding )).compact
+        .map(&method(:make_db_safe     )).compact
         .uniq
 
       # puts @links

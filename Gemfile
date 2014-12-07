@@ -6,5 +6,5 @@ gemspec
 gem 'redis'
 gem 'term-ansicolor', '~> 1.3.0'
 gem 'mongo'
-gem 'mongoid'
+gem 'mongoid', "~> 4", github: "mongoid/mongoid"
 gem 'thor'

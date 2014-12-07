@@ -19,8 +19,8 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency 'term-ansicolor', '~> 1.3'
-  spec.add_dependency 'mongo', '~> 1.11'
-  spec.add_dependency 'mongoid', '~> 3.1'
+  spec.add_dependency 'mongo', '~> 1.3'
+  spec.add_dependency 'mongoid', '~> 4'
   spec.add_dependency 'thor', '~> 0.19'
 
   spec.add_development_dependency "bundler", "~> 1.7"

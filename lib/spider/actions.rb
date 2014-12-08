@@ -21,7 +21,6 @@ module Spider
       begin
         # try to save to the database
         @links.each do |l|
-
           # existing_link = Link
           #   .where(location: l)
           # if existing_link.nil?
@@ -30,8 +29,6 @@ module Spider
           # else
           #   log_warning "#{l} already exists"
           # end
-
-
         end
 
         # # creating the page with the relationship
@@ -89,6 +86,13 @@ module Spider
       scrape
       self
     end
+
+    # def cached
+    #   page = fetch_page(Link.each.last)
+    #   @page_title = page.title
+    #   @
+    # end
+
 
     ## return an enumerator of all saved links
     def all

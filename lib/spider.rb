@@ -4,7 +4,7 @@ require 'mongoid'
 
 module Spider
   class Core
-    include ::Spider::Actions
+    include Spider::Actions
     def initialize
       Mongoid.load!(File.expand_path(File.join(File.dirname(__FILE__), "mongoid.yml")), :production)
       @links = Array.new

@@ -1,6 +1,5 @@
 require 'spider/util'
 require 'spider/model'
-require 'term/ansicolor'
 require 'json'
 require 'nokogiri'
 require 'restclient'
@@ -8,7 +7,7 @@ require 'restclient'
 module Spider
   module Actions
     include Util
-    include Term::ANSIColor
+    include Log
     include Models
 
     # welcome
@@ -27,8 +26,8 @@ module Spider
           scrape
         rescue Exception => e
           # Welcome
-          log "broken link",
-          print red, bold, e, reset, "\n"
+          log "broken link", :red
+          log e, :red
           @links.delete_at i
         end
         depth -= 1
@@ -40,14 +39,14 @@ module Spider
 
         # try to save to the database
         @links.map { |l|
-          log "Adding #{l} to database"
+          log_info "Adding #{l} to database"
           Link.create(location:l)
         }
 
-
+      # doing some cool ass things
       rescue Exception => e
-        print red, bold, "Error saving to database", reset, "\n"
-        print red, bold, e, reset, "\n"
+        log_error "Error saving to the database"
+        log_error e
       end
 
       self
@@ -58,19 +57,19 @@ module Spider
       # return nil if @body.nil? or @body.empty? #
 
       @body.css('a')
-        .map(&method(:when_valid_url)).compact
+        .map(&method(:is_external_link)).compact.uniq
         .map(&method(:append_to_links))
 
       # puts @links
-      print bold, blue, "#{@links.count} links", reset, "\n"
+      log_info "#{@links.count} links"
       self
     end
 
     def seed(location)
-      @body = Nokogiri::HTML(RestClient.get(location))
+      @body = Nokogiri::HTML(RestClient.get(location)).css('a')
+      # return self
       self
     end
-
 
     ## return an enumerator of all saved links
     def all

@@ -10,6 +10,7 @@ module Spider
     include Log
     include Models
 
+
     # loops through the existing links
     # and scrapes to a given depth
     def crawl(depth=10)
@@ -21,14 +22,13 @@ module Spider
       begin
         # try to save to the database
         @links.each do |l|
-          # existing_link = Link
-          #   .where(location: l)
-          # if existing_link.nil?
-          #   log_info "Adding #{l} to database"
+          existing_link = Link.where(location: l)
+          if existing_link.nil?
+            log_info "Adding #{l} to database"
             Link.create(location:l)
-          # else
-          #   log_warning "#{l} already exists"
-          # end
+          else
+            log_warning "#{l} already exists"
+          end
         end
 
         # # creating the page with the relationship
@@ -94,9 +94,9 @@ module Spider
     # end
 
 
-    ## return an enumerator of all saved links
-    def all
-      Link.each
-    end
+    # ## return an enumerator of all saved links
+    # def all
+    #   Link.each
+    # end
   end
 end

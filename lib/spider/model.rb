@@ -12,6 +12,7 @@ module Spider
     class Page
       include Mongoid::Document
       field :title
+      embeds_many :links
       store_in collection: 'pages', database: 'spider', session: 'default'
     end
   end

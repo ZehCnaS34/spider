@@ -13,8 +13,40 @@ module Spider
     # loops through the existing links
     # and scrapes to a given depth
     def crawl(depth=10)
+      log_info "At link scrape depth #{depth}"
       if @links.empty? and @body.nil?
         log_error "No links pre-cached"
+      end
+
+      begin
+        # try to save to the database
+        @links.each do |l|
+
+          # existing_link = Link
+          #   .where(location: l)
+          # if existing_link.nil?
+          #   log_info "Adding #{l} to database"
+            Link.create(location:l)
+          # else
+          #   log_warning "#{l} already exists"
+          # end
+
+
+        end
+
+        # # creating the page with the relationship
+        # existing_page = Page.where(title: @page_title)
+        # if existing_page.nil?
+          Page.create(title: @page_title, links: Link.each.to_a)
+        # else
+        #   log_warning "#{@page_title} already in db"
+        # end
+
+
+      # doing some cool ass things
+      rescue Exception => e
+        log_error "Error saving to the database"
+        log_error e
       end
 
       ## looping throught existing links
@@ -36,25 +68,12 @@ module Spider
 
       # cleaning the invalid links
       @links.compact
-      begin
-
-        # try to save to the database
-        @links.map { |l|
-          log_info "Adding #{l} to database"
-          Link.create(location:l)
-        }
-
-      # doing some cool ass things
-      rescue Exception => e
-        log_error "Error saving to the database"
-        log_error e
-      end
 
       self
     end
 
     def scrape(body=@body)
-      olg_info "Begin Scrape"
+      log_info "Begin Scrape for #{@page_title}"
        body
         .map(&method(:is_external_link)).compact.uniq
         .map(&method(:append_to_links))
@@ -63,11 +82,11 @@ module Spider
 
     ## adds a starting location, then scrapes
     def seed(location)
-      @body = fetch_page(location).css('a')
-        .map { |l| l['href'] }
-#        .map { |l| l if not l.nil? }.compact
+      page = fetch_page(location)
+      @page_title = page.title
+      @body = page.css('a')
+        .map { |l| l['href'] }.uniq
       scrape
-      # to run more commands
       self
     end
 

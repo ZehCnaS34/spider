@@ -16,6 +16,10 @@ module Spider
       log "Error [#{content}]", :red
     end
 
+    def log_warning(content)
+      log "Warning [#{content}]", :yellow
+    end
+
     def log_info(content)
       log "Info [#{content}]", :cyan
     end

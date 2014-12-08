@@ -14,7 +14,7 @@ module Spider
     # @return [String|Nil]
     def is_external_link(e)
       log_error "#{e} has wrong link type::#{e.class}" if e.class != String
-      res = /http/.match e
+      res = /(^http|^\/\/)/.match e
 
       if res
         return res.string
@@ -31,7 +31,7 @@ module Spider
         @links << l
         log_success "Adding: #{l}"
       else
-        log_info "Rejecting: #{l}::already in @links list"
+        log_warning "Rejecting: #{l}::already in @links list"
       end
     end
 

@@ -4,10 +4,12 @@ require 'spider'
 require 'thor'
 
 class Crawl < Thor
+  include Spider::Log
   desc 'seed LOCATION DEPTH', 'start the webcrawl at LOCATION'
   def seed(location,depth=1)
+    log_info "Calling Seed with #{location} and #{depth}"
     s = Spider::Core.new
-    s.seed(location).scrape.crawl(depth.to_i)
+    s.seed(location).crawl(depth.to_i)
   end
 
   desc 'go DEPTH', 'crawl on the links that are already obtained'

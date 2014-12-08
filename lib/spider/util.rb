@@ -5,9 +5,22 @@ require 'json'
 module Spider
   module Util
     include ::Spider::Log
+
+
+    # Returns nil or a String whether the given string
+    # passes the regular expression test
+    #
+    # @param format [String]
+    # @return [String|Nil]
     def is_external_link(e)
-      res = /http::\/\//.match e
-      return res.string if res
+      log_error "#{e} has wrong link type::#{e.class}" if e.class != String
+      res = /http/.match e
+
+      if res
+        return res.string
+      else
+        log_error "#{e} not external link"
+      end
       nil
     end
 
@@ -21,6 +34,13 @@ module Spider
         log_info "Rejecting: #{l}::already in @links list"
       end
     end
+
+    def fetch_page(location)
+      Nokogiri::HTML(RestClient.get(location))
+    end
+
+
+
   end
 
 end

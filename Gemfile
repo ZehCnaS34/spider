@@ -10,6 +10,15 @@ gem 'thor'
 gem 'nokogiri'
 gem 'rest-client'
 gem 'pry'
+
+
+
+
+
 gem 'rspec'
 gem 'rspec-expectations'
 gem 'rspec-mocks'
+
+
+
+gem 'log4r'

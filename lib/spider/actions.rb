@@ -10,10 +10,11 @@ module Spider
     include Log
     include Models
 
-    # welcome
+    # loops through the existing links
+    # and scrapes to a given depth
     def crawl(depth=10)
-      if @links.empty?
-        puts "There are not links alread present in the application, please seed the application"
+      if @links.empty? and @body.nil?
+        log_error "No links pre-cached"
       end
 
       ## looping throught existing links
@@ -21,13 +22,13 @@ module Spider
         break if depth == 0
         ## print link is broken in the ling
         begin
-          log "Scrapping #{l}", :blue
+          log_info "Scrapping #{l}"
           seed(l)
           scrape
         rescue Exception => e
           # Welcome
-          log "broken link", :red
-          log e, :red
+          log_error "broken link"
+          log_error e
           @links.delete_at i
         end
         depth -= 1
@@ -52,22 +53,21 @@ module Spider
       self
     end
 
-    def scrape
-      # don't run if @body is empty
-      # return nil if @body.nil? or @body.empty? #
-
-      @body.css('a')
+    def scrape(body=@body)
+      olg_info "Begin Scrape"
+       body
         .map(&method(:is_external_link)).compact.uniq
         .map(&method(:append_to_links))
-
-      # puts @links
-      log_info "#{@links.count} links"
       self
     end
 
+    ## adds a starting location, then scrapes
     def seed(location)
-      @body = Nokogiri::HTML(RestClient.get(location)).css('a')
-      # return self
+      @body = fetch_page(location).css('a')
+        .map { |l| l['href'] }
+#        .map { |l| l if not l.nil? }.compact
+      scrape
+      # to run more commands
       self
     end
 

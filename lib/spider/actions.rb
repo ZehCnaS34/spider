@@ -10,7 +10,6 @@ module Spider
     include Log
     include Models
 
-
     # loops through the existing links
     # and scrapes to a given depth
     def crawl(depth=10)
